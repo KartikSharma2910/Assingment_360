@@ -14,7 +14,7 @@ const getLocalData = () => {
 
 const List = () => {
   const [value, setValue] = useState("");
-  const [task, setTask] = useState<TaskProps[]>(getLocalData());
+  const [task, setTask] = useState<TaskProps[]>(getLocalData() || []);
   const [edit, setEdit] = useState(false);
   const [isEditItem, setIsEditItem] = useState(0);
 
@@ -121,7 +121,7 @@ const List = () => {
         </button>
       </div>
       <div className="itemsWrapper">
-        {task?.map((item, index) => {
+        {task.map((item, index) => {
           return (
             <div
               key={index}
