@@ -7,6 +7,10 @@ type TaskProps = {
   status: boolean;
 };
 
+/**
+ * Getting task list from local storage
+ */
+
 const getLocalData = () => {
   const task = localStorage.getItem("tasks");
   return task && JSON.parse(localStorage.getItem("tasks") || "{}");
@@ -15,8 +19,8 @@ const getLocalData = () => {
 const List = () => {
   const [value, setValue] = useState("");
   const [task, setTask] = useState<TaskProps[]>(getLocalData() || []);
-  const [edit, setEdit] = useState(false);
-  const [isEditItem, setIsEditItem] = useState(0);
+  const [editingTodoId, setEditingTodoId] = useState<string | undefined>("");
+  const [editedTodoText, setEditedTodoText] = useState<string | undefined>("");
 
   /**
    * Setting task list to local storage
@@ -34,17 +38,6 @@ const List = () => {
   const addItem = () => {
     if (!value) {
       return;
-    } else if (value && edit) {
-      setTask(
-        task.map((elem, index) => {
-          if (index === isEditItem) {
-            return { ...elem, name: value };
-          }
-          return elem;
-        })
-      );
-      setValue("");
-      setEdit(false);
     } else {
       const newTask = [...task];
       const inputData = {
@@ -59,29 +52,20 @@ const List = () => {
   };
 
   /**
-   * [Delete Item]
-   * Function to delete item from the list
-   */
-
-  const deleteItem = (id: number) => {
-    const updatedItems = task.filter((_, idx) => {
-      return idx !== id;
-    });
-    setTask(updatedItems);
-  };
-
-  /**
    * [Edit Item]
-   * Function to edit items in the list
+   * Function to edit Item in the list
    */
 
-  const editItem = (id: number) => {
-    const newEditItems: any = task.find((_, idx) => {
-      return idx === id;
+  const editFunction = (todo: TaskProps) => {
+    const updatedTodos = task.map((editTask) => {
+      if (editTask.id === todo.id) {
+        return { ...editTask, name: editedTodoText };
+      }
+      return editTask;
     });
-    setEdit(true);
-    setValue(newEditItems?.name);
-    setIsEditItem(id);
+    setTask(updatedTodos);
+    setEditingTodoId("");
+    setEditedTodoText("");
   };
 
   /**
@@ -107,6 +91,7 @@ const List = () => {
       <img src="/todo.png" alt="todo" className="imageWrapper" />
       <div className="inputWrapper">
         <input
+          type="text"
           className="input"
           placeholder="Enter your task here..."
           value={value}
@@ -117,7 +102,7 @@ const List = () => {
           disabled={value === ""}
           onClick={() => addItem()}
         >
-          {edit ? "Edit Task" : "Add Task"}
+          Add Task
         </button>
       </div>
       <div className="itemsWrapper">
@@ -127,26 +112,39 @@ const List = () => {
               key={index}
               className={!item.status ? "item" : "completedItem"}
             >
-              <div className={!item.status ? "task" : "completedTask"}>
-                {item.name}
-              </div>
+              {editingTodoId === item.id && item.status !== true ? (
+                <input
+                  type="text"
+                  className="editInput"
+                  value={editedTodoText}
+                  onChange={(e) => setEditedTodoText(e.target.value)}
+                  onBlur={(e) => {
+                    editFunction(item);
+                    if (e.target.value === "") {
+                      setTask(task.filter(({ id }) => id !== item.id));
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      editFunction(item);
+                      if (editedTodoText === "") {
+                        setTask(task.filter(({ id }) => id !== item.id));
+                      }
+                    }
+                  }}
+                />
+              ) : (
+                <div
+                  onDoubleClick={() => {
+                    setEditingTodoId(item.id);
+                    setEditedTodoText(item.name);
+                  }}
+                  className={!item.status ? "task" : "completedTask"}
+                >
+                  {item.name}
+                </div>
+              )}
               <div>
-                {!item.status && (
-                  <>
-                    <img
-                      src="/edit.png"
-                      alt="edit"
-                      className="editImageIcon"
-                      onClick={() => editItem(index)}
-                    />
-                    <img
-                      onClick={() => deleteItem(index)}
-                      src="/delete.png"
-                      alt="delete"
-                      className="deleteImageIcon"
-                    />
-                  </>
-                )}
                 {!item.status ? (
                   <img
                     onClick={() => checkCompleted(item.id)}
@@ -168,8 +166,12 @@ const List = () => {
         })}
       </div>
       <div>
-        <button className="clearButton" onClick={() => setTask([])}>
-          Clear All Task
+        <button
+          className="clearButton"
+          disabled={!task.filter((item) => item.status === true).length}
+          onClick={() => setTask(task.filter((item) => item.status !== true))}
+        >
+          Clear Task
         </button>
       </div>
     </div>

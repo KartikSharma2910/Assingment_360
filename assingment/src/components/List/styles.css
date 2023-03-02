@@ -28,9 +28,19 @@
 .input {
   padding: 10px 15px;
   font-size: 14px;
-  width: 200px;
+  width: 240px;
   border: none;
   border-radius: 10px;
+}
+
+.editInput {
+  color: white;
+  background-color: #87ab95;
+  border: none;
+}
+
+.editInput:focus {
+  outline: none;
 }
 
 .addTask {
@@ -41,6 +51,7 @@
   border-radius: 20px;
   padding: 5px 15px;
   cursor: pointer;
+  transition: all 400ms ease;
 }
 
 .addTask:disabled {
@@ -49,7 +60,7 @@
 }
 
 .itemsWrapper {
-  width: 470px;
+  width: 500px;
   border: 2px solid #cccfcd;
   padding: 10px 10px;
   border-radius: 8px;
@@ -71,6 +82,7 @@
 
 .task {
   width: 300px;
+  cursor: pointer;
   overflow-x: auto;
 }
 
@@ -82,6 +94,13 @@
   font-size: 16px;
   cursor: pointer;
   border-radius: 10px;
+  transition: all 400ms ease;
+}
+
+.clearButton:disabled {
+  background-color: #9e9e9d;
+  cursor: not-allowed;
+  transition: all 400ms ease;
 }
 
 .deleteImageIcon {
@@ -91,15 +110,9 @@
   cursor: pointer;
 }
 
-.editImageIcon {
-  width: 25px;
-  height: 25px;
-  margin-right: 15px;
-  cursor: pointer;
-}
-
 .completedTask {
   text-decoration: line-through;
+  cursor: not-allowed;
 }
 
 .completedItem {
