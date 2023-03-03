@@ -150,14 +150,14 @@ const List = () => {
                     onClick={() => checkCompleted(item.id)}
                     src="/unchecked.png"
                     alt="unchecked"
-                    className="deleteImageIcon"
+                    className="checkImageIcon"
                   />
                 ) : (
                   <img
                     onClick={() => checkCompleted(item.id)}
                     src="/checkedCheckbox.png"
                     alt="checkBox"
-                    className="deleteImageIcon"
+                    className="checkImageIcon"
                   />
                 )}
               </div>
