@@ -1,4 +1,4 @@
-import { List } from "./components";
+import { List } from "./components/feature";
 
 const App = () => {
   return <List />;

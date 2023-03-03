@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Button } from "../../common";
 import "./styles.css";
 
 type TaskProps = {
@@ -73,7 +74,7 @@ const List = () => {
    * Function to set task completed in the list
    */
 
-  const checkCompleted = (id: any) => {
+  const checkCompleted = (id: string | undefined) => {
     const updatedtask = task.map((todo) => {
       if (todo.id === id) {
         return {
@@ -97,13 +98,12 @@ const List = () => {
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-        <button
+        <Button
           className="addTask"
           disabled={value === ""}
           onClick={() => addItem()}
-        >
-          Add Task
-        </button>
+          label="Add Task"
+        />
       </div>
       <div className="itemsWrapper">
         {task.map((item, index) => {
@@ -166,13 +166,12 @@ const List = () => {
         })}
       </div>
       <div>
-        <button
+        <Button
           className="clearButton"
           disabled={!task.filter((item) => item.status === true).length}
           onClick={() => setTask(task.filter((item) => item.status !== true))}
-        >
-          Clear Task
-        </button>
+          label="Clear Task"
+        />
       </div>
     </div>
   );
